@@ -8,7 +8,7 @@ require 'date'
 describe Blog do
 
   subject{ Blog.new }
-
+  
   it "has no entries" do
     subject.entries.must_be_empty
   end
