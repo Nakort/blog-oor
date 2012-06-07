@@ -1,4 +1,5 @@
 require 'minitest/autorun'
+require_relative '../spec_helper_lite'
 stub_module 'ActiveModel::Conversion'
 stub_module 'ActiveModel::Naming'
 require_relative '../../app/models/post'
@@ -48,4 +49,30 @@ describe Post do
       subject.publish
     end
   end
+
+  describe "#pubdate" do
+    let(:clock) { stub!}
+    let(:now) { DateTime.parse("2011-09-11T02:56") }
+
+    describe "before publishing" do
+       it "is blank" do
+         subject.pubdate.must_be_nil
+       end
+     end
+
+    describe "after publishing" do
+      before do
+        stub(clock).now(){ now }
+        subject.blog = stub!
+        subject.publish(clock)
+      end
+
+      it "is the current time" do
+        subject.pubdate.must_equal(now)
+      end
+      it "is a datetime" do
+         subject.pubdate.class.must_equal(DateTime)
+       end
+     end
+   end
 end
